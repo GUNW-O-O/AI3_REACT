@@ -1,11 +1,10 @@
 # AI3_REACT
 리액트
+# 리액트 프로젝트 생성
 npx create-react-app react-app
-
 cd react-app
-
 npm start
-
+---
 package.json 디버그로도 실행가능
 
 ```
