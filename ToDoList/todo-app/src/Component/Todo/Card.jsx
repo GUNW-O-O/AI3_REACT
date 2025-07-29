@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Card = ({ todo, onToggle }) => {
+const Card = ({ todo, onToggle, onRemove }) => {
   // 💾 state
   // const [status, setStatus] = useState(todo.status)
 
@@ -22,7 +22,7 @@ const Card = ({ todo, onToggle }) => {
         <span>{name}</span>
       </div>
       <div className="item">
-        <button className='btn'>
+        <button className='btn' onClick={ () => onRemove(id) }>
           삭제
         </button>
       </div>

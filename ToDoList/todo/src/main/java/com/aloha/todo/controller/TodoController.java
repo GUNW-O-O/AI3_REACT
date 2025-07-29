@@ -33,23 +33,22 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/todos")
 public class TodoController {
 
-    
-    @Autowired private TodoService todoService;
+    @Autowired
+    private TodoService todoService;
 
     // ⭐ sp-crud
-    
+
     @GetMapping()
     public ResponseEntity<?> getAll(
-        @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-        @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-        Pagination pagination
-    ) {
+            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+            Pagination pagination) {
         try {
             PageInfo<Todos> pageInfo = todoService.list(page, size);
             pagination.setPage(page);
             pagination.setSize(size);
             pagination.setTotal(pageInfo.getTotal());
-            Map<String,Object> reponse = new HashMap<>();
+            Map<String, Object> reponse = new HashMap<>();
             List<Todos> list = pageInfo.getList();
             reponse.put("list", list);
             reponse.put("pagination", pagination);
@@ -59,12 +58,12 @@ public class TodoController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable("id") String id) {
         try {
             Todos todo = todoService.selectById(id);
-            if(id == null || todo == null) {
+            if (id == null || todo == null) {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(todo, HttpStatus.OK);
@@ -73,7 +72,7 @@ public class TodoController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody Todos todo) {
         try {
@@ -87,32 +86,62 @@ public class TodoController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PutMapping()
     public ResponseEntity<?> update(@RequestBody Todos todo) {
         try {
-           boolean result = todoService.updateById(todo);
+            boolean result = todoService.updateById(todo);
             if (result)
                 return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-                else
-                    return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+            else
+                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> destroy(@PathVariable("id") String id) {
         try {
             boolean result = todoService.deleteById(id);
             if (result)
                 return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-                else
-                    return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+            else
+                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // 전체 삭제
+    @DeleteMapping("/all")
+    public ResponseEntity<?> deleteAll() {
+        try {
+            boolean result = todoService.deleteAll();
+            if (result)
+                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 전체 완료
+    @PutMapping("/all")
+    public ResponseEntity<?> completeAll() {
+        try {
+            boolean result = todoService.completeAll();
+            if (result)
+                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
