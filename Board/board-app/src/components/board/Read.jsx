@@ -7,6 +7,7 @@ const Read = () => {
       <h1 className="title">게시글 조회</h1>
       {/* <table className="table" border={1}> */}
       <table className={styles.table} border={1}>
+        <tbody>
         <tr>
           <th>제목</th>
           <td>
@@ -30,6 +31,7 @@ const Read = () => {
             <textarea className={styles['form-input']} cols="40" rows="10" readOnly></textarea>
           </td>
         </tr>
+        </tbody>
       </table>
       <div className="btn-box">
         <Link to="/boards" className="btn">목록</Link>

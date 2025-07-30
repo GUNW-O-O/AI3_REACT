@@ -3,3 +3,6 @@ npm i react-router-dom axios mui
 
 ### mui icon
 npm install @mui/icons-material @mui/material @emotion/react @emotion/styled
+
+### vite.config.js
+포트 설정

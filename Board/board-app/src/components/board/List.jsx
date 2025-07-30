@@ -8,13 +8,13 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 const List = ({list, pagination}) => {
-  const boards = [
-    { no : 1, id : 'board1', title : '제목1', writer : '작성자1', content : '내용1', createdAt : '2025-07-39 10:55:25'},
-    { no : 2, id : 'board2', title : '제목2', writer : '작성자2', content : '내용2', createdAt : '2025-07-39 10:55:25'},
-    { no : 3, id : 'board3', title : '제목3', writer : '작성자3', content : '내용3', createdAt : '2025-07-39 10:55:25'},
-    { no : 4, id : 'board4', title : '제목4', writer : '작성자4', content : '내용4', createdAt : '2025-07-39 10:55:25'},
-    { no : 5, id : 'board5', title : '제목5', writer : '작성자5', content : '내용5', createdAt : '2025-07-39 10:55:25'},
-  ]
+  // const boards = [
+  //   { no : 1, id : 'board1', title : '제목1', writer : '작성자1', content : '내용1', createdAt : '2025-07-39 10:55:25'},
+  //   { no : 2, id : 'board2', title : '제목2', writer : '작성자2', content : '내용2', createdAt : '2025-07-39 10:55:25'},
+  //   { no : 3, id : 'board3', title : '제목3', writer : '작성자3', content : '내용3', createdAt : '2025-07-39 10:55:25'},
+  //   { no : 4, id : 'board4', title : '제목4', writer : '작성자4', content : '내용4', createdAt : '2025-07-39 10:55:25'},
+  //   { no : 5, id : 'board5', title : '제목5', writer : '작성자5', content : '내용5', createdAt : '2025-07-39 10:55:25'},
+  // ]
   return (
     <>
       <div className="container">
@@ -33,7 +33,7 @@ const List = ({list, pagination}) => {
           </thead>
           <tbody>
             {
-              boards.length == 0
+              list.length == 0
               ?
               <tr>
                 <td colSpan={4} align='center'>
@@ -41,7 +41,7 @@ const List = ({list, pagination}) => {
                 </td>
               </tr>
               :
-              boards.map( (board) =>
+              list.map( (board) =>
                 <tr>
                   <td>{board.no}</td>
                   <td>
