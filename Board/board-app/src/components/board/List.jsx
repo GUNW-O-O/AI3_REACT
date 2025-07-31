@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 // import './css/List.css'
 import styles from './css/List.module.css'
+import noImage from '../../assets/react.svg'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
@@ -46,6 +47,7 @@ const List = ({list, pagination}) => {
           <thead>
             <tr>
               <th>번호</th>
+              <th>썸네일</th>
               <th>제목</th>
               <th>작성자</th>
               <th>등록일자</th>
@@ -56,7 +58,7 @@ const List = ({list, pagination}) => {
               list.length == 0
               ?
               <tr>
-                <td colSpan={4} align='center'>
+                <td colSpan={5} align='center'>
                   조회된 데이터가 없습니다
                 </td>
               </tr>
@@ -64,6 +66,16 @@ const List = ({list, pagination}) => {
               list.map( (board) =>
                 <tr>
                   <td>{board.no}</td>
+                  <td>
+                    {
+                      board.file == null
+                      ?
+                      <img src={noImage}/>
+                      :
+                      <img src={`/api/files/img/${board.file.id}`}
+                        style={ {width:'100px'}} alt={board.file.originName} />
+                    }
+                  </td>
                   <td>
                     <Link to={`/boards/${board.id}`}>
                     {board.title}

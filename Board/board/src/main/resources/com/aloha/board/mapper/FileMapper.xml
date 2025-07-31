@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 파일 등록 -->
     <insert id="insert">
-        INSERT INTO file(
+        INSERT INTO files(
             id, p_table, p_no, 
             file_name, origin_name, file_path, file_size, 
             type, seq )

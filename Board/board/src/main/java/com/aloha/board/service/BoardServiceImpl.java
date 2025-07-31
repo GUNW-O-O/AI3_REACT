@@ -84,7 +84,7 @@ public class BoardServiceImpl implements BoardService{
                 Files fileInfo = new Files();
                 fileInfo.setPTable(pTable);
                 fileInfo.setPNo(pNo);
-                fileInfo.setData(mainFile);
+                fileInfo.setData(multipartFile);
                 fileInfo.setType("SUB");
                 uploadFileList.add(fileInfo);
             }

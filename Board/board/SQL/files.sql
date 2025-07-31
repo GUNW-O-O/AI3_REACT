@@ -9,8 +9,8 @@ CREATE TABLE `files` (
   `origin_name` text,                          -- 원본 파일명
   `file_path` text NOT NULL,                   -- 파일 경로
   `file_size`  BIGINT NOT NULL DEFAULT '0',        -- 파일 크기 (기본값 0)
-  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 등록일시
-  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 수정일시
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 등록일시
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 수정일시
   `type` ENUM('MAIN', 'SUB') NOT NULL DEFAULT 'SUB',        -- 타입
   `seq` BIGINT NULL DEFAULT 0,                              -- 순서
   PRIMARY KEY (`no`)                      -- 주키 설정
