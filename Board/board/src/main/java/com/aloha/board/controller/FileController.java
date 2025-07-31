@@ -112,10 +112,10 @@ public class FileController {
         log.info("idList[] : " + idList);
         int result = 0;
         if (noList != null) {
-            result = fileService.deleteFilesList(noList);
+            result = fileService.deleteFileList(noList);
         }
         if (idList != null) {
-            result = fileService.deleteFilesListById(idList);
+            result = fileService.deleteFileListById(idList);
         }
         if (result > 0) {
             return new ResponseEntity<>(HttpStatus.OK);
