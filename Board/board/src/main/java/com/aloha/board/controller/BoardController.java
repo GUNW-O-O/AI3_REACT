@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,9 +69,29 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    @PostMapping()
-    public ResponseEntity<?> create(@RequestBody Boards board) {
+    /**
+     * @RequestBody 붙일 때 안 붙일 때 차이
+     * - @RequestBody ✔ : application/json, application/xml
+     * - @RequestBody ❌ : multipart/form-data, application/x-www-form-urlencoded
+     */
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createFormData(Boards board) {
+        try {
+            boolean result = boardService.insert(board);
+            if (result)
+                return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
+            else
+                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createJSON(@RequestBody Boards board) {
         try {
             boolean result = boardService.insert(board);
             if (result)

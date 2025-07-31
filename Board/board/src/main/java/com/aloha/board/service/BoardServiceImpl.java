@@ -40,18 +40,18 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public boolean insert(Boards entity) {
-        return boardsMapper.insert(entity) > 0;
+    public boolean insert(Boards boards) {
+        return boardsMapper.insert(boards) > 0;
     }
 
     @Override
-    public boolean update(Boards entity) {
-        return boardsMapper.update(entity) > 0;
+    public boolean update(Boards boards) {
+        return boardsMapper.update(boards) > 0;
     }
 
     @Override
-    public boolean updateById(Boards entity) {
-        return boardsMapper.updateById(entity) > 0;
+    public boolean updateById(Boards boards) {
+        return boardsMapper.updateById(boards) > 0;
     }
 
     @Override
