@@ -19,37 +19,37 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class BoardServiceImpl implements BoardService{
 
-    @Autowired private BoardMapper boardsMapper;
+    @Autowired private BoardMapper boardMapper;
     @Autowired private FileService fileService;
 
     @Override
     public List<Boards> list() {
-        return boardsMapper.list();
+        return boardMapper.list();
     }
 
     @Override
     public PageInfo<Boards> list(int page, int size) {
         // ⭐ Page.Helper.startPage (현재 페이지, 페이지당 데이터 수)
         PageHelper.startPage(page,size); // 매퍼가 쿼리요청전에 먼저 페이징처리할 쿼리를 삽입
-        List<Boards> list = boardsMapper.list();
+        List<Boards> list = boardMapper.list();
         PageInfo<Boards> pageInfo = new PageInfo<>(list);
         return pageInfo;
     }
 
     @Override
     public Boards select(Long no) {
-        return boardsMapper.select(no);
+        return boardMapper.select(no);
     }
 
     @Override
     public Boards selectById(String id) {
-        return boardsMapper.selectById(id);
+        return boardMapper.selectById(id);
     }
 
     @Override
     public boolean insert(Boards boards) {
         // 게시글 등록
-        int result = boardsMapper.insert(boards);
+        int result = boardMapper.insert(boards);
         // 파일 업로드
         result += upload(boards);
         return result > 0;
@@ -101,10 +101,10 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public boolean update(Boards boards) {
         // 게시글 수정
-        int result = boardsMapper.updateById(boards);
+        int result = boardMapper.updateById(boards);
 
         // 파일 업로드
-        Boards oldBoard = boardsMapper.selectById(boards.getId());
+        Boards oldBoard = boardMapper.selectById(boards.getId());
         boards.setNo(oldBoard.getNo());
         result += upload(boards);
         return result > 0;
@@ -112,13 +112,13 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public boolean updateById(Boards boards) {
-        return boardsMapper.updateById(boards) > 0;
+        return boardMapper.updateById(boards) > 0;
     }
 
     @Override
     public boolean delete(Long no) {
         // 게시글 삭제
-        int result = boardsMapper.delete(no);
+        int result = boardMapper.delete(no);
         // 종속된 첨부 파일 삭제
         Files file = new Files();
         file.setPTable("boards");
@@ -131,13 +131,15 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public boolean deleteById(String Id) {
         // 게시글 삭제
-        int result = boardsMapper.deleteById(Id);
+        int result = boardMapper.deleteById(Id);
         // 종속된 첨부파일 삭제
-        Boards board = boardsMapper.selectById(Id);
+        Boards board = boardMapper.selectById(Id);
+        System.out.println(result);
         Long no = board.getNo();
         Files file = new Files();
         file.setPTable("boards");
         file.setPNo(no);
+        log.info("board : {}", board);
         int deleteCount = fileService.deleteByParent(file);
         log.info(deleteCount + " 개의 파일이 삭제 되었습니다.");
         return result > 0;

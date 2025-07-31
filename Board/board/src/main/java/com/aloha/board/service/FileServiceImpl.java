@@ -218,7 +218,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public int deleteFilesById(String idList) {
+    public int deleteFileById(String idList) {
         if( idList == null || idList.isEmpty() ) return 0;
 
         // 파일 삭제
@@ -234,7 +234,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public int deleteFilesList(List<Long> noList) {
+    public int deleteFileList(List<Long> noList) {
         if ( noList == null || noList.isEmpty() ) return 0;
 
         // 파일 삭제
@@ -242,7 +242,7 @@ public class FileServiceImpl implements FileService {
             Files file = select(no);
             delete(file);
         }
-        int count = fileMapper.deleteFilesList(noList);
+        int count = fileMapper.deleteFileList(noList);
 
         log.info("파일" + count + "개를 삭제 하였습니다");
 
@@ -250,7 +250,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public int deleteFilesListById(List<String> idList) {
+    public int deleteFileListById(List<String> idList) {
         if ( idList == null || idList.isEmpty() ) return 0;
 
         // 파일 삭제
@@ -258,7 +258,7 @@ public class FileServiceImpl implements FileService {
             Files file = selectById(id);
             delete(file);
         }
-        int count = fileMapper.deleteFilesListById(idList);
+        int count = fileMapper.deleteFileListById(idList);
         log.info("파일" + count + "개를 삭제 하였습니다");
 
         return count;

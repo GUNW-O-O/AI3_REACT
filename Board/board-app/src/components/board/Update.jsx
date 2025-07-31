@@ -5,7 +5,14 @@ import DownloadIcon from '@mui/icons-material/Download';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Checkbox from '@mui/material/Checkbox';
 
-const Update = ({ board, fileList, onUpdate, onDelete, onDownload, onDeleteFile, deleteCheckedFiles }) => {
+const Update = ({ 
+  board, 
+  fileList, 
+  onUpdate, 
+  onDelete, 
+  onDownload, 
+  onDeleteFile, 
+  deleteCheckedFiles }) => {
 
   // state
   const [title, setTitle] = useState('')

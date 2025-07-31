@@ -6,8 +6,8 @@ import * as files from '../../apis/files'
 
 const UpdateContainer = () => {
 
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   // state
   const [board, setBoard] = useState({})
