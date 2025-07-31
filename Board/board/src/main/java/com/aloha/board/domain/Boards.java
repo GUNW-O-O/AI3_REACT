@@ -23,6 +23,9 @@ public class Boards {
     private MultipartFile mainFile;
     private List<MultipartFile> files;
 
+    // 파일 정보
+    private Files file;
+
 
     public Boards() {
         this.setId(UUID.randomUUID().toString());

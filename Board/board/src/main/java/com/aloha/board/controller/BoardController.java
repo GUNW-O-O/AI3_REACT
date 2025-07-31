@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aloha.board.domain.Boards;
+import com.aloha.board.domain.Files;
 import com.aloha.board.domain.Pagination;
 import com.aloha.board.service.BoardService;
+import com.aloha.board.service.FileService;
 import com.github.pagehelper.PageInfo;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +34,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/boards")
 public class BoardController {
 
-    @Autowired private BoardService boardService;
+    @Autowired
+    private BoardService boardService;
+    @Autowired
+    private FileService fileService;
 
-    
     @GetMapping()
     public ResponseEntity<?> getAll(
             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
@@ -55,24 +59,33 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable("id") String id) {
         try {
             Boards board = boardService.selectById(id);
-            if (id == null || board == null) {
-                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(board, HttpStatus.OK);
+            Map<String, Object> response = new HashMap<>();
+            // 게시글
+            response.put("board", board);
+            // 파일 목록
+            Files file = new Files();
+            file.setPTable("boards");
+            file.setPNo(board.getNo());
+            List<Files> fileList = fileService.listByParent(file);
+            response.put("board", board);
+            response.put("fileList", fileList);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
      * @RequestBody 붙일 때 안 붙일 때 차이
-     * - @RequestBody ✔ : application/json, application/xml
-     * - @RequestBody ❌ : multipart/form-data, application/x-www-form-urlencoded
+     *              - @RequestBody ✔ : application/json, application/xml
+     *              - @RequestBody ❌ : multipart/form-data,
+     *              application/x-www-form-urlencoded
      */
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createFormData(Boards board) {
@@ -88,8 +101,6 @@ public class BoardController {
         }
     }
 
-
-
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createJSON(@RequestBody Boards board) {
         try {
@@ -103,9 +114,9 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    @PutMapping()
-    public ResponseEntity<?> update(@RequestBody Boards board) {
+
+    @PutMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateForm(Boards board) {
         try {
             boolean result = boardService.updateById(board);
             if (result)
@@ -117,7 +128,21 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
+    @PutMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateJSON(@RequestBody Boards board) {
+        try {
+            boolean result = boardService.updateById(board);
+            if (result)
+                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> destroy(@PathVariable("id") String id) {
         try {
@@ -130,5 +155,5 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
 }

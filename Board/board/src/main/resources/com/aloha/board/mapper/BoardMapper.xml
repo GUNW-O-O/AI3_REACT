@@ -3,15 +3,36 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace="매퍼 인터페이스 경로" --> 
-<mapper namespace="com.aloha.board.mapper.BoardsMapper">
+<mapper namespace="com.aloha.board.mapper.BoardMapper">
 
-    <select id="list" resultType="Boards">
+    <resultMap type="Boards" id="BoardMap">
+        <id property="no" column="no" />
+        <result property="no" column="no"/>
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="writer" column="writer"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+
+        <association property="file" column="no" javaType="Files" select="selectMainFile"></association>
+    </resultMap>
+
+    <select id="selectMainFile" resultType="Files">
+        SELECT *
+        FROM files
+        WHERE p_no = #{no}
+            AND p_table = 'boards'
+            AND TYPE = 'MAIN'
+    </select>
+
+    <select id="list" resultMap="BoardMap">
         SELECT *
         FROM boards
     </select>
 
     <!-- ⚡ 페이징 처리 후 정렬을 적용 -->
-    <!-- 이유 : 정렬 후 페이징 하면, 완료 안 된 것만 앞으로 나오기까
+    <!-- 이유 : 정렬 후 페이징 하면, 완료 안 된 것만 앞으로 나오니까
                 페이징 후 정렬을 적용합니다.
      -->
 
@@ -27,12 +48,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE id = #{id}
     </select>
 
-    <insert id="insert">
+    <insert id="insert" parameterType="Boards" useGeneratedKeys="true" keyProperty="no">
         INSERT INTO boards (id, title, writer, content)
         VALUES (#{id}, #{title}, #{writer}, #{content})
     </insert>
 
-    <update id="update">
+    <update id="update" parameterType="Boards">
         UPDATE boards
         <set>
             <if test="title != null">
@@ -49,7 +70,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE no = #{no}
     </update>
 
-    <update id="updateById">
+    <update id="updateById" parameterType="Boards">
         UPDATE boards
         <set>
             <if test="title != null">

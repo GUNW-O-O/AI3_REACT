@@ -1,19 +1,26 @@
 package com.aloha.board.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.aloha.board.domain.Boards;
-import com.aloha.board.mapper.BoardsMapper;
+import com.aloha.board.domain.Files;
+import com.aloha.board.mapper.BoardMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class BoardServiceImpl implements BoardService{
 
-    @Autowired private BoardsMapper boardsMapper;
+    @Autowired private BoardMapper boardsMapper;
+    @Autowired private FileService fileService;
 
     @Override
     public List<Boards> list() {
@@ -41,12 +48,66 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public boolean insert(Boards boards) {
-        return boardsMapper.insert(boards) > 0;
+        // 게시글 등록
+        int result = boardsMapper.insert(boards);
+        // 파일 업로드
+        result += upload(boards);
+        return result > 0;
+    }
+
+    /**
+     * 파일 업로드
+     * @param board
+     * @return
+     */
+    public int upload(Boards board) {
+        int result = 0;
+        String pTable = "boards";
+        Long pNo = board.getNo();
+
+        List<Files> uploadFileList = new ArrayList<>();
+        MultipartFile mainFile = board.getMainFile();
+        if( mainFile != null && !mainFile.isEmpty() ) {
+            Files mainFileInfo = new Files();
+            mainFileInfo.setPTable(pTable);
+            mainFileInfo.setPNo(pNo);
+            mainFileInfo.setData(mainFile);
+            mainFileInfo.setType("MAIN");
+            uploadFileList.add(mainFileInfo);
+        }
+
+        List<MultipartFile> files = board.getFiles();
+        if( files != null && !files.isEmpty()) {
+            for (MultipartFile multipartFile : files) {
+                if(multipartFile.isEmpty())
+                    continue;
+                Files fileInfo = new Files();
+                fileInfo.setPTable(pTable);
+                fileInfo.setPNo(pNo);
+                fileInfo.setData(mainFile);
+                fileInfo.setType("SUB");
+                uploadFileList.add(fileInfo);
+            }
+        }
+        try {
+            result += fileService.upload(uploadFileList);
+        } catch (Exception e) {
+            log.error("게시글 파일 업로드 중 에러 발생");
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
     public boolean update(Boards boards) {
-        return boardsMapper.update(boards) > 0;
+        // 게시글 수정
+        int result = boardsMapper.updateById(boards);
+
+        // 파일 업로드
+        Boards oldBoard = boardsMapper.selectById(boards.getId());
+        boards.setNo(oldBoard.getNo());
+        result += upload(boards);
+        return result > 0;
     }
 
     @Override
@@ -56,12 +117,30 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public boolean delete(Long no) {
-        return boardsMapper.delete(no) > 0;
+        // 게시글 삭제
+        int result = boardsMapper.delete(no);
+        // 종속된 첨부 파일 삭제
+        Files file = new Files();
+        file.setPTable("boards");
+        file.setPNo(no);
+        int deleteCount = fileService.deleteByParent(file);
+        log.info(deleteCount + " 개의 파일이 삭제 되었습니다.");
+        return result > 0;
     }
 
     @Override
     public boolean deleteById(String Id) {
-        return boardsMapper.deleteById(Id) > 0;
+        // 게시글 삭제
+        int result = boardsMapper.deleteById(Id);
+        // 종속된 첨부파일 삭제
+        Boards board = boardsMapper.selectById(Id);
+        Long no = board.getNo();
+        Files file = new Files();
+        file.setPTable("boards");
+        file.setPNo(no);
+        int deleteCount = fileService.deleteByParent(file);
+        log.info(deleteCount + " 개의 파일이 삭제 되었습니다.");
+        return result > 0;
     }
     
 }

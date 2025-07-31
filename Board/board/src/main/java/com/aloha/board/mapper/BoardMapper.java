@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.aloha.board.domain.Boards;
 
 @Mapper
-public interface BoardsMapper extends BaseMapper<Boards>{
+public interface BoardMapper extends BaseMapper<Boards>{
 
     
 }
