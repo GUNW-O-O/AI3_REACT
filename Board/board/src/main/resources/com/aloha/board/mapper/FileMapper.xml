@@ -43,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <!-- 파일 등록 -->
-    <insert id="insert">
+    <insert id="insert" parameterType="Files" useGeneratedKeys="true" keyProperty="no">
         INSERT INTO files ( 
             id, p_table, p_no, 
             file_name, origin_name, file_path, file_size, 

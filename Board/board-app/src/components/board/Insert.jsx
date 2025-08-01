@@ -4,6 +4,7 @@ import styles from './css/Insert.module.css'
 // ckeditor5
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import * as fileApi from '../../apis/files'
 
 const Insert = ({ onInsert }) => {
 
@@ -48,6 +49,49 @@ const Insert = ({ onInsert }) => {
     // onInsert(data, headers)
     onInsert(formData, headers)
   }
+
+  function uploadPlugin(editor) {
+    editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+      return customUploadAdapter(loader);
+    };
+  }
+
+
+
+  const customUploadAdapter = (loader) => {
+    return {
+      upload() {
+        return new Promise((resolve, reject) => {
+          const formData = new FormData();
+          loader.file.then(async (file) => {
+            console.log(file);
+            formData.append("pTable", 'editor');
+            formData.append("pNo", 0);
+            formData.append("data", file);
+            formData.append("type", 'SUB');
+            formData.append("seq", 0);
+
+            const headers = {
+                'Content-Type': 'multipart/form-data',
+            };
+
+            let response = await fileApi.upload(formData, headers);
+            let data = await response.data;
+            console.log(`data : ${data}`);
+
+            let newFile = data;
+            let newFileNo = newFile.id
+
+            // 이미지 렌더링
+            await resolve({
+              default: `http://localhost:8080/files/img/${newFile}`
+            })
+
+          });
+        });
+      },
+    };
+  };
 
   return (
     <div className="container">
@@ -100,7 +144,7 @@ const Insert = ({ onInsert }) => {
                     options: ['left', 'center', 'right', 'justify'],
                   },
 
-                  // extraPlugins: [uploadPlugin]            // 업로드 플러그인
+                  extraPlugins: [uploadPlugin]            // 업로드 플러그인
                 }}
                 data=""         // ⭐ 기존 컨텐츠 내용 입력 (HTML)
                 onReady={editor => {

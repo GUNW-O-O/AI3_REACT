@@ -63,12 +63,51 @@ public class FileController {
         }
     }
 
-    @PostMapping()
-    public ResponseEntity<?> create(@RequestBody Files file) {
+    // @PostMapping(value = "", consumes = "application/json")
+    // public ResponseEntity<?> createJSON(@RequestBody Files file) {
+    //     try {
+    //         boolean result = fileService.upload(file);
+    //         if (result)
+    //             return new ResponseEntity<>(file, HttpStatus.OK);
+    //         else
+    //             return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+    //     } catch (Exception e) {
+    //         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
+
+    // @PostMapping(value = "", consumes = "multipart/form-data")
+    // public ResponseEntity<?> createForm(Files file) {
+    //     try {
+    //         boolean result = fileService.upload(file);
+    //         if (result)
+    //             return new ResponseEntity<>(file, HttpStatus.OK);
+    //         else
+    //             return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+    //     } catch (Exception e) {
+    //         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
+
+    @PostMapping(value = "", consumes = "application/json")
+    public ResponseEntity<?> createJSON(@RequestBody Files file) {
         try {
-            boolean result = fileService.insert(file);
+            boolean result = fileService.upload(file);
             if (result)
-                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+                return new ResponseEntity<>(file.getId(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "", consumes = "multipart/form-data")
+    public ResponseEntity<?> createForm(Files file) {
+        try {
+            boolean result = fileService.upload(file);
+            if (result)
+                return new ResponseEntity<>(file.getId(), HttpStatus.OK);
             else
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
