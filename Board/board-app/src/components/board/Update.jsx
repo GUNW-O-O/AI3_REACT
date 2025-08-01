@@ -4,14 +4,17 @@ import styles from './css/Update.module.css'
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Checkbox from '@mui/material/Checkbox';
+// ckeditor5
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-const Update = ({ 
-  board, 
-  fileList, 
-  onUpdate, 
-  onDelete, 
-  onDownload, 
-  onDeleteFile, 
+const Update = ({
+  board,
+  fileList,
+  onUpdate,
+  onDelete,
+  onDownload,
+  onDeleteFile,
   deleteCheckedFiles }) => {
 
   // state
@@ -21,7 +24,7 @@ const Update = ({
   const [fileIdList, setFileIdList] = useState([]) // 선택 삭제 id 목록
   const [mainFile, setMainFile] = useState(null)
   const [files, setFiles] = useState(null)
-  
+
   // 변경 이벤트 함수
   const changeTitle = (e) => { setTitle(e.target.value) }
   const changeWriter = (e) => { setWriter(e.target.value) }
@@ -32,7 +35,7 @@ const Update = ({
   // 수정 함수
   const onSubmit = () => {
     const data = {
-      'id' : id,
+      'id': id,
       'title': title,
       'writer': writer,
       'content': content
@@ -44,28 +47,28 @@ const Update = ({
   }
 
   useEffect(() => {
-    if(board) {
+    if (board) {
       setTitle(board.title)
       setWriter(board.writer)
       setContent(board.content)
     }
-  
+
   }, [board])
 
   const handleDelete = () => {
     const check = window.confirm('정말로 삭제하시겠습니까?')
-    if( check )
+    if (check)
       onDelete(id)
   }
-  
+
   // 선택 삭제 핸들러
   const handleCheckedFileDelete = (id) => {
     const check = window.confirm(`선택한 ${fileIdList.length} 정말로 삭제하시겠습니까?`)
-    if( check )
+    if (check)
       deleteCheckedFiles(fileIdList)
-      setFileIdList([])
+    setFileIdList([])
   }
-  
+
   // 파일 선택 체크박스 핸들러
   const checkFileId = (id) => {
     console.log(id);
@@ -75,13 +78,13 @@ const Update = ({
     for (let i = 0; i < fileIdList.length; i++) {
       const fileId = fileIdList[i];
       // 체크면 체크박스를 해제
-      if( fileId == id ) {
-        fileIdList.splice(i,1)
+      if (fileId == id) {
+        fileIdList.splice(i, 1)
         checked = true
       }
     }
     // 체크가 안되어있으면 체크
-    if( !checked ){
+    if (!checked) {
       fileIdList.push(id)
     }
     console.log(`체크한 아이디 : ${fileIdList}`)
@@ -89,9 +92,9 @@ const Update = ({
   }
 
   // 파일 삭제 핸들러
-  const handleFileDelete = () => {
+  const handleFileDelete = (id) => {
     const check = window.confirm('파일을 삭제하시겠습니까?')
-    if( check )
+    if (check)
       onDeleteFile(id)
   }
 
@@ -101,30 +104,72 @@ const Update = ({
       {/* <table className="table" border={1}> */}
       <table className={styles.table} border={1}>
         <thead>
-        <tr>
-          <th>제목</th>
-          <td>
-            <input type='text' onChange={changeTitle} value={title} className={styles['form-input']} />
-            {/* 
+          <tr>
+            <th>제목</th>
+            <td>
+              <input type='text' onChange={changeTitle} value={title} className={styles['form-input']} />
+              {/* 
               CSS modules 의 클래스 선택자는 카멜케이스 쓰는 것이 관례
                                 CSS                   JavaScript
               * 카멜케이스 : .formInput      : -> {styles.formInput}
               * 케밥케이스 : .form-input     : -> {styles[form-input]}
             */}
-          </td>
-        </tr>
-        <tr>
-          <th>작성자</th>
-          <td>
-            <input type='text' onChange={changeWriter} value={writer} className={styles['form-input']} />
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={2}>
-            <textarea className={styles['form-input']} onChange={changeContent} value={content} cols="40" rows="10"></textarea>
-          </td>
-        </tr>
-        <tr>
+            </td>
+          </tr>
+          <tr>
+            <th>작성자</th>
+            <td>
+              <input type='text' onChange={changeWriter} value={writer} className={styles['form-input']} />
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={2}>
+              {/* <textarea className={styles['form-input']} onChange={changeContent} value={content} cols="40" rows="10"></textarea> */}
+              <CKEditor
+                editor={ClassicEditor}
+                config={{
+                  placeholder: "내용을 입력하세요.",
+                  toolbar: {
+                    items: [
+                      'undo', 'redo',
+                      '|', 'heading',
+                      '|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+                      '|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+                      '|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent',
+                      '|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
+                      '|', 'mediaEmbed',
+                    ],
+                    shouldNotGroupWhenFull: false
+                  },
+                  editorConfig: {
+                    height: 500, // Set the desired height in pixels
+                  },
+                  alignment: {
+                    options: ['left', 'center', 'right', 'justify'],
+                  },
+
+                  // extraPlugins: [uploadPlugin]            // 업로드 플러그인
+                }}
+                data={board.content}         // ⭐ 기존 컨텐츠 내용 입력 (HTML)
+                onReady={editor => {
+                  // You can store the "editor" and use when it is needed.
+                  console.log('Editor is ready to use!', editor);
+                }}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  console.log({ event, editor, data });
+                  setContent(data);
+                }}
+                onBlur={(event, editor) => {
+                  console.log('Blur.', editor);
+                }}
+                onFocus={(event, editor) => {
+                  console.log('Focus.', editor);
+                }}
+              />
+            </td>
+          </tr>
+          <tr>
             <td colSpan={2}>
               {
                 fileList.map((file) => (
@@ -143,7 +188,7 @@ const Update = ({
                       <button className="btn" onClick={() => onDownload(file.id, file.originName)}>
                         <DownloadIcon /> </button>
                       <button className="btn" onClick={() => handleFileDelete(file.id)}>
-                        <DeleteForeverIcon/></button>
+                        <DeleteForeverIcon /></button>
                     </div>
                   </div>
                 ))
