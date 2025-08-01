@@ -131,17 +131,19 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public boolean deleteById(String Id) {
         // 게시글 삭제
-        int result = boardMapper.deleteById(Id);
-        // 종속된 첨부파일 삭제
         Boards board = boardMapper.selectById(Id);
-        System.out.println(result);
+        int result = boardMapper.deleteById(Id);
+        System.out.println(Id);
+        // 종속된 첨부파일 삭제
+        // Boards board = boardMapper.selectById(Id);
+        log.info("board : {}", board);
         Long no = board.getNo();
         Files file = new Files();
         file.setPTable("boards");
         file.setPNo(no);
-        log.info("board : {}", board);
         int deleteCount = fileService.deleteByParent(file);
         log.info(deleteCount + " 개의 파일이 삭제 되었습니다.");
+        System.out.println(result);
         return result > 0;
     }
     

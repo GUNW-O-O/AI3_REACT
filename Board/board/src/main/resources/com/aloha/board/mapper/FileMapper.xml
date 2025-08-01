@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE no = #{no}
     </select>
 
-    <!-- 파일 id 조회 -->
+    <!-- 파일 조회 -->
     <select id="selectById" resultType="Files">
         SELECT *
         FROM files
@@ -44,14 +44,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 파일 등록 -->
     <insert id="insert">
-        INSERT INTO files(
+        INSERT INTO files ( 
             id, p_table, p_no, 
             file_name, origin_name, file_path, file_size, 
-            type, seq )
+            type, seq
+            )
         VALUES ( 
             #{id}, #{pTable}, #{pNo}, 
             #{fileName}, #{originName}, #{filePath}, #{fileSize}, 
-            #{type}, #{seq} )
+            #{type}, #{seq}
+            )
     </insert>
 
     <!-- 파일 수정 -->
@@ -59,63 +61,63 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         UPDATE files
             <set>
                 <if test="type != null">
-                    type = #{type}, 
+                    type = #{type},
                 </if>
                 <if test="seq != null">
-                    seq = #{seq}, 
+                    seq = #{seq},
                 </if>
                 <if test="pTable != null">
                     p_table = #{pTable},
-               </if>
-               <if test="pNo != null">
+                </if>
+                <if test="pNo != null">
                     p_no = #{pNo},
-               </if>
-               <if test="fileName != null">
+                </if>
+                <if test="fileName != null">
                     file_name = #{fileName},
-               </if>
-               <if test="originName != null">
+                </if>
+                <if test="originName != null">
                     origin_name = #{originName},
-               </if>
-               <if test="filePath != null">
+                </if>
+                <if test="filePath != null">
                     file_path = #{filePath},
-               </if>
-               <if test="fileSize != null">
+                </if>
+                <if test="fileSize != null">
                     file_size = #{fileSize},
-               </if>
-                    updated_at = now()
+                </if>
+                    update_at = now()
             </set>
         WHERE no = #{no}
     </update>
 
-    <!-- 파일 id 수정 -->
+    <!-- 파일 수정 -->
     <update id="updateById">
         UPDATE files
             <set>
                 <if test="type != null">
-                    type = #{type}, 
+                    type = #{type},
                 </if>
                 <if test="seq != null">
-                    seq = #{seq}, 
+                    seq = #{seq},
                 </if>
                 <if test="pTable != null">
                     p_table = #{pTable},
-               </if>
-               <if test="pNo != null">
+                </if>
+                <if test="pNo != null">
                     p_no = #{pNo},
-               </if>
-               <if test="fileName != null">
+                </if>
+                <if test="fileName != null">
                     file_name = #{fileName},
-               </if>
-               <if test="originName != null">
+                </if>
+                <if test="originName != null">
                     origin_name = #{originName},
-               </if>
-               <if test="filePath != null">
+                </if>
+                <if test="filePath != null">
                     file_path = #{filePath},
-               </if>
-               <if test="fileSize != null">
+                </if>
+                <if test="fileSize != null">
                     file_size = #{fileSize},
-               </if>
-                    updated_at = now()
+                </if>
+                    update_at = now()
             </set>
         WHERE id = #{id}
     </update>
@@ -126,11 +128,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE no = #{no}
     </delete>
 
-    <!-- 파일 id 삭제 -->
+    <!-- 파일 삭제 -->
     <delete id="deleteById">
         DELETE FROM files
         WHERE id = #{id}
     </delete>
+
 
     <!-- 파일 목록 삭제 - 부모 테이블 기준 파일 목록 삭제 -->
     <delete id="deleteByParent">
@@ -139,55 +142,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           AND p_no = #{pNo}
     </delete>
 
-    <!-- MyBatis 문법  -->
-    <!-- 🟡 #{} vs ${} -->
-    <!-- #{변수명} ➡ '값' 변수의 타입을 인식해서 정수/문자열를 출력 -->
-    <!-- ${변수명} ➡  값  변수의 타입과 상관없이 출력  -->
-    <!-- 예시
-        String noList = "1,2,3";
-
-        #{noList} = '1,2,3'
-        ${noList} = 1,2,3
-     -->
+    <!-- ✨ #{} vs ${} -->
+    <!-- #{변수명} ➡ '값' -->
+    <!-- ${변수명} ➡  값 -->
 
     <!-- 선택 삭제 - no (문자열 - IN) -->
     <!-- no IN (1,2,3) -->
     <delete id="deleteFiles">
         DELETE FROM files
-        WHERE no IN ( ${ no })
+        WHERE no IN ( ${no} )
     </delete>
 
     <!-- 선택 삭제 - id (문자열 - IN) -->
     <!-- id IN ('ID1', 'ID2', 'ID3') -->
     <delete id="deleteFilesById">
         DELETE FROM files
-        WHERE id IN ( ${ id })
+        WHERE id IN ( ${id} )
     </delete>
 
-    <!-- 선택 삭제 - no (List 컬렉션)-->
-    <!-- 예시
-        List<Integer> noList = ... 
-                    1,2,3
-        => (1,2,3) 
-     -->
-    <delete id ="deleteFileList">
+    <!-- 선택 삭제 - no (List 컬렉션) -->
+    <delete id="deleteFileList"> 
         DELETE FROM files
-        WHERE no IN 
+        WHERE no IN
             <foreach collection="noList" item="no" open="(" separator="," close=")">
-                #{no} 
+                #{no}
             </foreach>
     </delete>
-    <!-- 선택 삭제 - id (List 컬렉션)-->
-    <delete id ="deleteFileListById">
+
+    <!-- 선택 삭제 - id (List 컬렉션) -->
+    <delete id="deleteFileListById"> 
         DELETE FROM files
-        WHERE id IN 
+        WHERE id IN
             <foreach collection="idList" item="id" open="(" separator="," close=")">
-                #{id} 
+                #{id}
             </foreach>
     </delete>
 
     <!-- 타입별 파일 조회 -->
-    <select id = "selectByType" resultType="Files">
+    <select id="selectByType" resultType="Files">
         SELECT *
         FROM files
         WHERE p_table = #{pTable}
@@ -195,10 +187,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           AND type = #{type}
         LIMIT 0, 1
     </select>
-    <!-- 타입별 파일 목록 -->
 
-    <!-- 타입별 파일 조회 -->
-    <select id = "listByType" resultType="Files">
+    <!-- 타입별 파일 목록 -->
+    <select id="listByType" resultType="Files">
         SELECT *
         FROM files
         WHERE p_table = #{pTable}
