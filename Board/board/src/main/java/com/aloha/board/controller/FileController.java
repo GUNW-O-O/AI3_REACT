@@ -63,38 +63,12 @@ public class FileController {
         }
     }
 
-    // @PostMapping(value = "", consumes = "application/json")
-    // public ResponseEntity<?> createJSON(@RequestBody Files file) {
-    //     try {
-    //         boolean result = fileService.upload(file);
-    //         if (result)
-    //             return new ResponseEntity<>(file, HttpStatus.OK);
-    //         else
-    //             return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
-    //     } catch (Exception e) {
-    //         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
-
-    // @PostMapping(value = "", consumes = "multipart/form-data")
-    // public ResponseEntity<?> createForm(Files file) {
-    //     try {
-    //         boolean result = fileService.upload(file);
-    //         if (result)
-    //             return new ResponseEntity<>(file, HttpStatus.OK);
-    //         else
-    //             return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
-    //     } catch (Exception e) {
-    //         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
-
     @PostMapping(value = "", consumes = "application/json")
     public ResponseEntity<?> createJSON(@RequestBody Files file) {
         try {
             boolean result = fileService.upload(file);
             if (result)
-                return new ResponseEntity<>(file.getId(), HttpStatus.OK);
+                return new ResponseEntity<>(file, HttpStatus.OK);
             else
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -107,13 +81,39 @@ public class FileController {
         try {
             boolean result = fileService.upload(file);
             if (result)
-                return new ResponseEntity<>(file.getId(), HttpStatus.OK);
+                return new ResponseEntity<>(file, HttpStatus.OK);
             else
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // @PostMapping(value = "", consumes = "application/json")
+    // public ResponseEntity<?> createJSON(@RequestBody Files file) {
+    //     try {
+    //         boolean result = fileService.upload(file);
+    //         if (result)
+    //             return new ResponseEntity<>(file.getId(), HttpStatus.OK);
+    //         else
+    //             return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+    //     } catch (Exception e) {
+    //         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
+
+    // @PostMapping(value = "", consumes = "multipart/form-data")
+    // public ResponseEntity<?> createForm(Files file) {
+    //     try {
+    //         boolean result = fileService.upload(file);
+    //         if (result)
+    //             return new ResponseEntity<>(file.getId(), HttpStatus.OK);
+    //         else
+    //             return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+    //     } catch (Exception e) {
+    //         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
     @PutMapping()
     public ResponseEntity<?> update(@RequestBody Files file) {

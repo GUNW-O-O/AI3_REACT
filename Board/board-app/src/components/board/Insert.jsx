@@ -56,8 +56,6 @@ const Insert = ({ onInsert }) => {
     };
   }
 
-
-
   const customUploadAdapter = (loader) => {
     return {
       upload() {
@@ -84,7 +82,7 @@ const Insert = ({ onInsert }) => {
 
             // 이미지 렌더링
             await resolve({
-              default: `http://localhost:8080/files/img/${newFile}`
+              default: `http://localhost:8080/files/img/${newFileNo}`
             })
 
           });

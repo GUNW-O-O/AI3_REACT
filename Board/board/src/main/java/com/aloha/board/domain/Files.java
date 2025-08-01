@@ -25,7 +25,7 @@ public class Files {
     private Date updatedAt;
 
     // 파일 데이터
-    // @JsonIgnore
+    @JsonIgnore
     MultipartFile data;
 
     public Files() {
