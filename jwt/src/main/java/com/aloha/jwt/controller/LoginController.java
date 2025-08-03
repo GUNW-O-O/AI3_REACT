@@ -1,5 +1,4 @@
-package com.aloha.controller;
-
+package com.aloha.jwt.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,7 +71,7 @@ public class LoginController {
                     .add("typ", SecurityConstants.TOKEN_TYPE)              // 헤더 설정
                 .and()
                 .expiration(new Date(System.currentTimeMillis() + 864000000))  // 토큰 만료 시간 설정 (10일)
-                .claim("uid", username)                                   // 클레임 설정: 사용자 아이디
+                .claim("uid", username)    
                 .claim("rol", roles)                                      // 클레임 설정: 역할 정보
                 .compact();                                                    // 최종적으로 토큰 생성
 
