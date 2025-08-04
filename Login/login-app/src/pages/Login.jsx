@@ -1,8 +1,18 @@
-import React from 'react'
+import React, { use } from 'react'
+import Header from '../components/Header/Header'
+import LoginForm from '../components/Login/LoginForm'
+
 
 const Login = () => {
+
+
   return (
-    <div>Login</div>
+    <>
+      <Header />
+      <div className="container">
+        <LoginForm />
+      </div>
+    </>
   )
 }
 
